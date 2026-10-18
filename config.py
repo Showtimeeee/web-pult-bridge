@@ -14,8 +14,6 @@ SERVER = {
     "retry_delay": 2,     # сек, пауза перед ОДНОЙ повторной попыткой
 }
 
-PROFILES = ["ROULETTE", "RADIO"]
-
 KEYS = {
     "ROULETTE": {
         "r": "roulette.spin",
@@ -50,6 +48,7 @@ KEYBOARD = {
     "rx": 15,
     "tx": 13,
     "baud": 115200,
+    "cooldown": 300,     # мс: защита от автоповтора при зажатой клавише
 }
 
 DISPLAY = {
