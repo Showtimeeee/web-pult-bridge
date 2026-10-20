@@ -1,3 +1,5 @@
+import time
+
 from machine import Pin, SPI, UART
 
 import config
@@ -14,6 +16,8 @@ _CHARS_PER_LINE = 30
 _kbd = UART(config.KEYBOARD["uart"], baudrate=config.KEYBOARD["baud"],
             rx=Pin(config.KEYBOARD["rx"]), tx=Pin(config.KEYBOARD["tx"]))
 
+_last_press = {}
+
 
 def read_keys():
     # спецклавиши Cardputer приходят многобайтовыми последовательностями,
@@ -21,11 +25,20 @@ def read_keys():
     keys = []
     if not _kbd.any():
         return keys
+    now = time.ticks_ms()
     for byte in _kbd.read() or b"":
         if byte == 0x09:
-            keys.append("\t")
+            key = "\t"
         elif 32 <= byte < 127:
-            keys.append(chr(byte))
+            key = chr(byte)
+        else:
+            continue
+        last = _last_press.get(key)
+        if last is not None and \
+                time.ticks_diff(now, last) < config.KEYBOARD["cooldown"]:
+            continue
+        _last_press[key] = now
+        keys.append(key)
     return keys
 
 
