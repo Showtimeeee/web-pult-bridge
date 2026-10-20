@@ -108,6 +108,8 @@ def main():
 
     app["online"] = net.wifi_wait()
     app["ip"] = net.wifi_ip() if app["online"] else ""
+    if app["online"]:
+        run_action(app["profile"].STATUS_ACTION)
     ui.draw(app)
 
     last_poll = 0
