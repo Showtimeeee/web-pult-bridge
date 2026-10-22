@@ -1,6 +1,6 @@
-from profiles import radio, roulette
+from profiles import lights, radio, roulette
 
-ALL = [roulette, radio]
+ALL = [roulette, radio, lights]
 
 
 def next_after(profile):
