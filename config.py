@@ -26,6 +26,13 @@ KEYS = {
         " ": "radio.toggle",
         "n": "radio.next",
     },
+    "LIGHTS": {
+        "1": "lights.scene.1",
+        "2": "lights.scene.2",
+        "3": "lights.scene.3",
+        " ": "lights.toggle",
+        "s": "lights.status",
+    },
 }
 
 # действие -> (метод, путь, тело запроса JSON-строкой или None)
@@ -38,6 +45,11 @@ ACTIONS = {
     "radio.toggle":     ("POST", "/api/radio/toggle",    None),
     "radio.next":       ("POST", "/api/radio/next",      None),
     "radio.status":     ("GET",  "/api/radio/status",    None),
+    "lights.scene.1":   ("POST", "/api/lights/scene",    '{"id": 1}'),
+    "lights.scene.2":   ("POST", "/api/lights/scene",    '{"id": 2}'),
+    "lights.scene.3":   ("POST", "/api/lights/scene",    '{"id": 3}'),
+    "lights.toggle":    ("POST", "/api/lights/toggle",   None),
+    "lights.status":    ("GET",  "/api/lights/status",   None),
 }
 
 # период фонового опроса статуса активного профиля в секундах, 0 = выкл.
