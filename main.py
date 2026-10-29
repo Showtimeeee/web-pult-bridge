@@ -102,6 +102,15 @@ def sync_wifi():
               app["ip"])
 
 
+def sync_clock():
+    try:
+        import ntptime
+        ntptime.settime()
+        print("[ntp] время синхронизировано")
+    except Exception as e:
+        print("[ntp] не удалось:", e)
+
+
 def main():
     print("=== Web Pult Bridge ===")
     load_env()
@@ -109,21 +118,31 @@ def main():
     app["online"] = net.wifi_wait()
     app["ip"] = net.wifi_ip() if app["online"] else ""
     if app["online"]:
+        sync_clock()
         run_action(app["profile"].STATUS_ACTION)
     ui.draw(app)
 
     last_poll = 0
+    last_refresh = 0
     while True:
         sync_wifi()
 
         for key in ui.read_keys():
             handle_key(key)
 
-        if config.STATUS_POLL and app["online"]:
+        poll = getattr(app["profile"], "POLL", config.STATUS_POLL)
+        if poll and app["online"]:
             now = time.time()
-            if now - last_poll >= config.STATUS_POLL:
+            if now - last_poll >= poll:
                 last_poll = now
                 run_action(app["profile"].STATUS_ACTION)
+
+        refresh = getattr(app["profile"], "REFRESH", 0)
+        if refresh:
+            now = time.time()
+            if now - last_refresh >= refresh:
+                last_refresh = now
+                app["dirty"] = True
 
         if app["err"] and time.time() >= app["err_until"]:
             app["err"] = ""
